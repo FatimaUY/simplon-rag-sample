@@ -1,0 +1,18 @@
+# docker-compose.yml
+services:
+  postgres:
+    image: pgvector/pgvector:pg16   # image officielle avec pgvector inclus
+    container_name: postgres_pgvector
+    environment:
+      POSTGRES_DB: rag_db
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: rag_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./api/data/db/init/init.sql:/docker-entrypoint-initdb.d/init.sql  # auto-exécuté au 1er démarrage
+    restart: unless-stopped
+
+volumes:
+  pgdata:
