@@ -62,7 +62,4 @@ def build_graph(db: AsyncSession):
 
     rag_graph = graph.compile()
 
-    print(rag_graph.get_graph().draw_ascii())
-    print(rag_graph.get_graph().draw_mermaid())
-
     return rag_graph
