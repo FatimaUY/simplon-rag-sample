@@ -1,6 +1,7 @@
 [theme]
+# Simplon brand palette (brandfetch.com/simplon.co)
 primaryColor = "#CE0033"
-backgroundColor = "#fcf3f3"
-secondaryBackgroundColor = "#F0F4F8"
-textColor = "##123744"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#FFF1EE"
+textColor = "#123744"
 font = "sans serif"

@@ -9,60 +9,84 @@ import streamlit as st
 from app.api_client import create_conversation, send_message
 from app.config import API_BASE_URL
 
+# --- Simplon brand palette (https://brandfetch.com/simplon.co) ---
+SIMPLON_RED = "#CE0033"
+SIMPLON_CORAL = "#F26F5C"
+SIMPLON_TEAL = "#123744"
+SIMPLON_CREAM = "#FFF1EE"
+
+ASSETS_DIR = Path(__file__).parent / "assets"
+LOGO_SVG = (ASSETS_DIR / "simplon-logo.svg").read_text(encoding="utf-8")
+
 # --- Page config (must be first Streamlit call) ---
 st.set_page_config(
-    page_title="RAG Sample — Assistant IA",
-    page_icon="💬",
+    page_title="Simplon — Assistant IA",
+    page_icon="🎓",
     layout="centered",
 )
 
-# --- Brand CSS: Space Grotesk font + chat bubble colors ---
-_USER_BUBBLE_SELECTOR = "[data-testid=\"stChatMessage\"]:has([data-testid=\"chatAvatarIcon-user\"]) [data-testid=\"stChatMessageContent\"]"  # noqa: E501
-_ASST_BUBBLE_SELECTOR = "[data-testid=\"stChatMessage\"]:has([data-testid=\"chatAvatarIcon-assistant\"]) [data-testid=\"stChatMessageContent\"]"  # noqa: E501
+# --- Brand CSS: Inter font + Simplon palette on chat bubbles, accents, sources ---
+_USER_BUBBLE = "[data-testid=\"stChatMessage\"]:has([data-testid=\"chatAvatarIcon-user\"]) [data-testid=\"stChatMessageContent\"]"  # noqa: E501
+_ASST_BUBBLE = "[data-testid=\"stChatMessage\"]:has([data-testid=\"chatAvatarIcon-assistant\"]) [data-testid=\"stChatMessageContent\"]"  # noqa: E501
 st.markdown(
     f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     html, body, [class*="css"], [data-testid="stChatMessageContent"] p,
-    [data-testid="stChatMessageContent"] li, .stMarkdown p {{
-        font-family: 'Space Grotesk', sans-serif !important;
+    [data-testid="stChatMessageContent"] li, .stMarkdown p, .stMarkdown li,
+    [data-testid="stChatInput"] textarea {{
+        font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }}
 
-    /* User bubble */
-    {_USER_BUBBLE_SELECTOR} {{
-        background-color: #2098D1 !important;
+    /* Bubble — user (filled red) */
+    {_USER_BUBBLE} {{
+        background-color: {SIMPLON_RED} !important;
         color: #FFFFFF !important;
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 0.75rem 1rem;
     }}
 
-    /* Assistant bubble */
-    {_ASST_BUBBLE_SELECTOR} {{
-        background-color: #F0F4F8 !important;
-        color: #1A1A1A !important;
-        border-radius: 12px;
+    /* Bubble — assistant (cream, teal text, coral left rule) */
+    {_ASST_BUBBLE} {{
+        background-color: {SIMPLON_CREAM} !important;
+        color: {SIMPLON_TEAL} !important;
+        border-radius: 14px;
         padding: 0.75rem 1rem;
+        border-left: 3px solid {SIMPLON_CORAL};
+    }}
+
+    /* Sources expander */
+    [data-testid="stExpander"] summary {{
+        color: {SIMPLON_TEAL} !important;
+    }}
+    [data-testid="stExpander"] summary:hover {{
+        color: {SIMPLON_CORAL} !important;
+    }}
+
+    /* Chat input focus ring picks up primary */
+    [data-testid="stChatInput"] textarea:focus {{
+        border-color: {SIMPLON_RED} !important;
+        box-shadow: 0 0 0 1px {SIMPLON_RED} !important;
     }}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# --- Header ---
+# --- Header: inline SVG logo + tagline + coral rule ---
 st.markdown(
-    """
-    <div style="text-align:center; padding: 1.5rem 0 0.5rem 0;">
-        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700;
-                     font-size:2rem; color:#1A1A1A; letter-spacing:0.05em;">
-            RAG Sample
-        </span><br/>
-        <span style="font-family:'Space Grotesk',sans-serif; font-weight:400;
-                     font-size:1rem; color:#2098D1;">
-            Assistant IA
+    f"""
+    <div style="display:flex; flex-direction:column; align-items:center;
+                gap:0.4rem; padding: 1.25rem 0 0.25rem 0;">
+        <div style="width:220px;">{LOGO_SVG}</div>
+        <span style="font-family:'Inter',sans-serif; font-weight:500;
+                     font-size:1rem; color:{SIMPLON_TEAL}; letter-spacing:0.02em;">
+            Assistant IA — Support apprenants
         </span>
     </div>
-    <hr style="border:none; border-top:2px solid #2098D1; margin: 0.5rem 0 1.5rem 0;">
+    <hr style="border:none; border-top:2px solid {SIMPLON_CORAL};
+               margin: 1rem 0 1.5rem 0;">
     """,
     unsafe_allow_html=True,
 )
