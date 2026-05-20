@@ -8,12 +8,17 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
+.venv/
+venv/
+env/
 .env
 .env.local
 .env.*.local
+data/db
 data/db/init/
 data/docs/
 data/evaluation/
 tests/
 *.log
 .git/
+.gitignore

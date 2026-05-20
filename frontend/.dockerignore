@@ -11,6 +11,9 @@ htmlcov/
 .env
 .env.local
 .env.*.local
+.venv/
+venv/
+env/
 tests/
 *.log
 .git/
