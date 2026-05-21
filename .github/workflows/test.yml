@@ -32,8 +32,13 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/rag_test
-      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/rag_test
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: rag_test
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
 
     steps:
       - name: Checkout
