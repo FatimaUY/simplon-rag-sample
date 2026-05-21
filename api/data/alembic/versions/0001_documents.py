@@ -3,6 +3,7 @@ Revision ID: 0001
 Revises:
 Create Date: 2026-04-07
 """
+
 from alembic import op
 from rag.config.settings import get_settings
 
@@ -10,6 +11,7 @@ revision = "0001"
 down_revision = None
 branch_labels = None
 depends_on = None
+
 
 def upgrade() -> None:
     schema = get_settings().postgres_schema
@@ -41,6 +43,7 @@ def upgrade() -> None:
             USING hnsw (embedding vector_cosine_ops)
             WITH (m = 16, ef_construction = 64)
     """)
+
 
 def downgrade() -> None:
     schema = get_settings().postgres_schema

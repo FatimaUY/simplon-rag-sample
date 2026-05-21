@@ -15,12 +15,15 @@ router = APIRouter(prefix="/documents", tags=["ingestion"])
 
 GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "simplon-fatima-corpus")
 
+
 def _is_gcs_configured() -> bool:
     return bool(os.getenv("GCS_BUCKET_NAME") or os.getenv("GCS_ENDPOINT_URL"))
+
 
 class IngestUrlsRequest(BaseModel):
     urls: list[HttpUrl]
     max_pages: int | None = Field(default=None, gt=0)
+
 
 @router.post("/ingest-urls")
 async def ingest_urls(
@@ -31,22 +34,27 @@ async def ingest_urls(
     for url in request.urls:
         try:
             result = await ingest_url(str(url), db, max_pages=request.max_pages)
-            results.append({
-                "document_id": str(result.document_id),
-                "filename": result.filename,
-                "chunks_created": result.chunks_created,
-                "already_existed": result.already_existed,
-                "error": None,
-            })
+            results.append(
+                {
+                    "document_id": str(result.document_id),
+                    "filename": result.filename,
+                    "chunks_created": result.chunks_created,
+                    "already_existed": result.already_existed,
+                    "error": None,
+                }
+            )
         except ValueError as e:
-            results.append({
-                "document_id": None,
-                "filename": str(url),
-                "chunks_created": 0,
-                "already_existed": False,
-                "error": str(e),
-            })
+            results.append(
+                {
+                    "document_id": None,
+                    "filename": str(url),
+                    "chunks_created": 0,
+                    "already_existed": False,
+                    "error": str(e),
+                }
+            )
     return results
+
 
 @router.post("/ingest")
 async def ingest_document(
@@ -83,6 +91,7 @@ async def ingest_document(
         "already_existed": result.already_existed,
     }
 
+
 @router.get("")
 async def list_documents(db: AsyncSession = Depends(get_db)) -> list[dict]:
     result = await db.execute(select(Document).order_by(Document.created_at.desc()))
@@ -95,6 +104,7 @@ async def list_documents(db: AsyncSession = Depends(get_db)) -> list[dict]:
         }
         for d in docs
     ]
+
 
 @router.delete("/{document_id}")
 async def delete_document(

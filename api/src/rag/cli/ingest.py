@@ -7,6 +7,7 @@ Usage:
 Exit codes:
     0 — always (individual errors are reported and skipped)
 """
+
 from __future__ import annotations
 import argparse
 import asyncio
@@ -22,13 +23,16 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_DOCS_DIR = _PROJECT_ROOT / "data" / "docs"
 GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "simplon-fatima-corpus")
 
+
 def _is_gcs_configured() -> bool:
     """Vrai si GCS est explicitement configuré."""
     return bool(os.getenv("GCS_BUCKET_NAME") or os.getenv("GCS_ENDPOINT_URL"))
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Ingest PDF files into the vector store")
+    parser = argparse.ArgumentParser(
+        description="Ingest PDF files into the vector store"
+    )
     parser.add_argument(
         "--docs-dir",
         type=Path,
@@ -89,7 +93,7 @@ async def _run(docs_dir: Path, from_gcs: bool = False, skip_gcs: bool = False) -
                     except Exception as exc:
                         print(f"[GCS] Erreur upload {pdf.name} : {exc}")
                         # On continue quand même l'ingestion locale
-                
+
                 # Ingestion dans la base vectorielle
                 result = await ingest_pdf(pdf, db)
                 if result.already_existed:
@@ -102,7 +106,9 @@ async def _run(docs_dir: Path, from_gcs: bool = False, skip_gcs: bool = False) -
                 print(f"[ERROR] {pdf.name} — {exc}")
                 summary.errors += 1
 
-    print(f"\nDone. Ingested: {summary.ingested}, Skipped: {summary.skipped}, Errors: {summary.errors}")
+    print(
+        f"\nDone. Ingested: {summary.ingested}, Skipped: {summary.skipped}, Errors: {summary.errors}"
+    )
 
 
 def main() -> None:

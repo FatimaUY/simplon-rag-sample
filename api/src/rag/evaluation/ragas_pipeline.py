@@ -53,7 +53,9 @@ async def run_evaluation(
 
         questions.append(sample.question)
         answers.append(state["answer"])
-        contexts.append([c["content"] for c in state.get("retrieved_chunks", [])] or [""])
+        contexts.append(
+            [c["content"] for c in state.get("retrieved_chunks", [])] or [""]
+        )
         ground_truths.append(sample.ground_truth)
 
     # Lazy imports to avoid ragas/mistralai version conflict at app startup

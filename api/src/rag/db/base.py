@@ -32,13 +32,23 @@ class PortableUUID(TypeDecorator):
         if value is None:
             return None
         if dialect.name == "postgresql":
-            return value if isinstance(value, _uuid_mod.UUID) else _uuid_mod.UUID(str(value))
-        return str(value) if isinstance(value, _uuid_mod.UUID) else str(_uuid_mod.UUID(str(value)))
+            return (
+                value
+                if isinstance(value, _uuid_mod.UUID)
+                else _uuid_mod.UUID(str(value))
+            )
+        return (
+            str(value)
+            if isinstance(value, _uuid_mod.UUID)
+            else str(_uuid_mod.UUID(str(value)))
+        )
 
     def process_result_value(self, value, dialect):
         if value is None:
             return None
-        return value if isinstance(value, _uuid_mod.UUID) else _uuid_mod.UUID(str(value))
+        return (
+            value if isinstance(value, _uuid_mod.UUID) else _uuid_mod.UUID(str(value))
+        )
 
 
 class Base(DeclarativeBase):

@@ -3,6 +3,7 @@ Revision ID: 0002
 Revises: 0001
 Create Date: 2026-04-07
 """
+
 from alembic import op
 from rag.config.settings import get_settings
 
@@ -10,6 +11,7 @@ revision = "0002"
 down_revision = "0001"
 branch_labels = None
 depends_on = None
+
 
 def upgrade() -> None:
     schema = get_settings().postgres_schema
@@ -34,6 +36,7 @@ def upgrade() -> None:
         CREATE INDEX IF NOT EXISTS messages_conversation_id_idx
             ON {schema}.messages (conversation_id, created_at)
     """)
+
 
 def downgrade() -> None:
     schema = get_settings().postgres_schema

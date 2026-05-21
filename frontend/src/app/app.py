@@ -26,8 +26,8 @@ st.set_page_config(
 )
 
 # --- Brand CSS: Inter font + Simplon palette on chat bubbles, accents, sources ---
-_USER_BUBBLE = "[data-testid=\"stChatMessage\"]:has([data-testid=\"chatAvatarIcon-user\"]) [data-testid=\"stChatMessageContent\"]"  # noqa: E501
-_ASST_BUBBLE = "[data-testid=\"stChatMessage\"]:has([data-testid=\"chatAvatarIcon-assistant\"]) [data-testid=\"stChatMessageContent\"]"  # noqa: E501
+_USER_BUBBLE = '[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) [data-testid="stChatMessageContent"]'  # noqa: E501
+_ASST_BUBBLE = '[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) [data-testid="stChatMessageContent"]'  # noqa: E501
 st.markdown(
     f"""
     <style>
@@ -96,11 +96,15 @@ if "conversation_id" not in st.session_state:
     try:
         st.session_state.conversation_id = create_conversation(API_BASE_URL)
         st.session_state.messages = []
-    except (httpx.ConnectError, httpx.ConnectTimeout):
-        st.error("Impossible de joindre l'API. Vérifiez que le serveur FastAPI est démarré.")  # noqa: E501
+    except httpx.ConnectError, httpx.ConnectTimeout:
+        st.error(
+            "Impossible de joindre l'API. Vérifiez que le serveur FastAPI est démarré."
+        )  # noqa: E501
         st.stop()
     except httpx.ReadTimeout:
-        st.error("L'API a mis trop de temps à répondre. Rafraîchissez la page pour réessayer.")
+        st.error(
+            "L'API a mis trop de temps à répondre. Rafraîchissez la page pour réessayer."
+        )
         st.stop()
     except Exception:
         st.error("Erreur inattendue lors de la création de la conversation.")
@@ -143,7 +147,7 @@ if prompt := st.chat_input("Posez votre question…"):
                     "instant ou augmentez `RAG_API_TIMEOUT_SECONDS`."
                 )
                 st.stop()
-            except (httpx.ConnectError, httpx.ConnectTimeout):
+            except httpx.ConnectError, httpx.ConnectTimeout:
                 st.error("Impossible de joindre l'API (connexion refusée).")
                 st.stop()
             except Exception:

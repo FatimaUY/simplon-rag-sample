@@ -80,7 +80,7 @@ async def guard_route(state: AgentState) -> dict:
         in_scope = bool(data.get("in_scope", True))
         needs_retrieval = bool(data.get("needs_retrieval", True))
         category = str(data.get("category", ""))
-    except (json.JSONDecodeError, ValueError):
+    except json.JSONDecodeError, ValueError:
         in_scope = True
         needs_retrieval = True
         category = ""
@@ -168,10 +168,13 @@ async def evaluate(state: AgentState) -> dict:
     """
     llm = _get_llm(model="mistral-small-latest")
 
-    context_summary = "\n".join(
-        f"- [{c['filename']}]: {c['content'][:100]}..."
-        for c in (state.get("retrieved_chunks") or [])
-    ) or "Aucun contexte récupéré."
+    context_summary = (
+        "\n".join(
+            f"- [{c['filename']}]: {c['content'][:100]}..."
+            for c in (state.get("retrieved_chunks") or [])
+        )
+        or "Aucun contexte récupéré."
+    )
 
     prompt = EVALUATOR_PROMPT.format(
         question=state["user_message"],
@@ -184,7 +187,7 @@ async def evaluate(state: AgentState) -> dict:
         score = float(data.get("score", 10))
         decision = str(data.get("decision", "answer"))
         rewrite_suggestion = str(data.get("rewrite_suggestion", ""))
-    except (json.JSONDecodeError, ValueError):
+    except json.JSONDecodeError, ValueError:
         score = 10.0
         decision = "answer"
         rewrite_suggestion = ""
@@ -233,7 +236,11 @@ async def save_turn(state: AgentState, db: AsyncSession) -> dict:
     conversation = result.scalar_one_or_none()
     if conversation:
         from sqlalchemy import func
-        conversation.metadata_ = {**conversation.metadata_, "last_updated": str(func.now())}
+
+        conversation.metadata_ = {
+            **conversation.metadata_,
+            "last_updated": str(func.now()),
+        }
 
     await db.commit()
     return {}

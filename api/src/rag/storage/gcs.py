@@ -7,13 +7,14 @@ from google.cloud import storage
 
 from google.auth.credentials import AnonymousCredentials
 
+
 def _get_client() -> storage.Client:
     endpoint = os.getenv("GCS_ENDPOINT_URL") or os.getenv("STORAGE_EMULATOR_HOST")
     if endpoint:
         return storage.Client(
             project="local",
             credentials=AnonymousCredentials(),
-            client_options={"api_endpoint": endpoint}
+            client_options={"api_endpoint": endpoint},
         )
     return storage.Client()
 
@@ -36,12 +37,12 @@ def download_all_pdfs(local_dir: Path, bucket_name: str | None = None) -> list[P
     """Télécharge tous les PDFs du bucket vers le dossier local."""
     bucket = get_bucket(bucket_name)
     local_dir.mkdir(parents=True, exist_ok=True)
-    
+
     blobs = [b for b in bucket.list_blobs() if b.name.endswith(".pdf")]
     if not blobs:
         print(f"[GCS] Aucun PDF dans le bucket")
         return []
-    
+
     downloaded = []
     for blob in blobs:
         local_path = local_dir / blob.name
@@ -51,7 +52,7 @@ def download_all_pdfs(local_dir: Path, bucket_name: str | None = None) -> list[P
             print(f"[GCS] Téléchargé : {blob.name}")
         else:
             print(f"[GCS] Déjà présent : {blob.name}")
-    
+
     return downloaded
 
 
