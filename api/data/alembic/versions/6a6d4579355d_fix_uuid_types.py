@@ -5,7 +5,9 @@ Create Date: 2026-04-07 17:51:58.489805
 """
 
 from typing import Sequence, Union
+
 from alembic import op
+
 from rag.config.settings import get_settings
 
 revision: str = "6a6d4579355d"

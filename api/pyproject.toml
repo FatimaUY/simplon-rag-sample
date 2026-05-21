@@ -60,6 +60,7 @@ pythonpath = ["."]
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+ignore = ["E501"]
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
@@ -89,3 +90,4 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/rag"]
+

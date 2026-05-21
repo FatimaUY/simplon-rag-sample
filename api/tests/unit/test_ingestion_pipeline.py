@@ -1,10 +1,9 @@
-import hashlib
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rag.rag.ingestion.pipeline import _compute_hash, ingest_pdf, _hash_url, ingest_url
+from rag.rag.ingestion.pipeline import _compute_hash, _hash_url, ingest_pdf, ingest_url
 
 
 def test_compute_hash_is_deterministic(tmp_path: Path):

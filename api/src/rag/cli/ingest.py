@@ -9,6 +9,7 @@ Exit codes:
 """
 
 from __future__ import annotations
+
 import argparse
 import asyncio
 import os
@@ -17,7 +18,7 @@ from pathlib import Path
 
 from rag.cli._runner import async_session
 from rag.rag.ingestion.pipeline import ingest_pdf
-from rag.storage.gcs import download_all_pdfs, upload_pdf, get_bucket
+from rag.storage.gcs import download_all_pdfs, upload_pdf
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_DOCS_DIR = _PROJECT_ROOT / "data" / "docs"

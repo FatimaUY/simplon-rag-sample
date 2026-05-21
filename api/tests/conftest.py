@@ -5,11 +5,11 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+import rag.db.models.conversation  # noqa: F401
+import rag.db.models.document  # noqa: F401 — register models
 from rag.api.app import create_app
 from rag.db.base import Base
 from rag.db.session import get_db
-import rag.db.models.document  # noqa: F401 — register models
-import rag.db.models.conversation  # noqa: F401
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 

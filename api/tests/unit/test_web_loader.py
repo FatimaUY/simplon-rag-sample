@@ -1,5 +1,5 @@
 import re
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from rag.config.settings import Settings
 from rag.rag.ingestion.web_loader import load_url

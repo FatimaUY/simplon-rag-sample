@@ -5,6 +5,7 @@ Create Date: 2026-04-07
 """
 
 from alembic import op
+
 from rag.config.settings import get_settings
 
 revision = "0001"

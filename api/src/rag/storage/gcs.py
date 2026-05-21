@@ -3,9 +3,8 @@
 import os
 from pathlib import Path
 
-from google.cloud import storage
-
 from google.auth.credentials import AnonymousCredentials
+from google.cloud import storage
 
 
 def _get_client() -> storage.Client:
@@ -40,7 +39,7 @@ def download_all_pdfs(local_dir: Path, bucket_name: str | None = None) -> list[P
 
     blobs = [b for b in bucket.list_blobs() if b.name.endswith(".pdf")]
     if not blobs:
-        print(f"[GCS] Aucun PDF dans le bucket")
+        print("[GCS] Aucun PDF dans le bucket")
         return []
 
     downloaded = []

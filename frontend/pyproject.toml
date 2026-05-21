@@ -20,6 +20,7 @@ testpaths = ["tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+ignore = ["E501"]
 
 [build-system]
 requires = ["hatchling"]

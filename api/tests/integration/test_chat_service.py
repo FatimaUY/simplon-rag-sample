@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from rag.db.models.conversation import Conversation, Message
 from rag.rag.chat_service import ChatService, ConversationNotFoundError
 
-
 # ── helpers ────────────────────────────────────────────────────────────────────
 
 
