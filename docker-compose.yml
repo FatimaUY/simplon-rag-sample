@@ -20,12 +20,20 @@ services:
       retries: 10
     restart: unless-stopped
 
-  fake-gcs:
+  fake-gcp:
     image: fsouza/fake-gcs-server:latest
-    container_name: simplon_rag_fake_gcs
+    container_name: simplon-fake-gcs
+    command: [
+      "-scheme", "http",
+      "-port", "4443",
+      "-external-url", "http://fake-gcp:4443",
+      "-backend", "filesystem",   
+      "-data", "/data"
+    ]
     ports:
       - "4443:4443"
-    command: -scheme http -port 4443 -backend memory
+    volumes:
+      - fake-gcs-data:/data
     restart: unless-stopped
 
   api:
@@ -36,7 +44,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      fake-gcs:
+      fake-gcp:
         condition: service_started
     env_file:
       - ./api/.env
@@ -50,6 +58,7 @@ services:
       CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:4173,http://localhost:8501"
       GCS_ENDPOINT_URL: "http://fake-gcs:4443"
       GCS_BUCKET_NAME: "simplon-fatima-corpus"
+
     ports:
       - "8000:8000"
     volumes:
@@ -85,3 +94,4 @@ volumes:
   pgdata:
   api_data_docs:
   api_data_eval:
+  fake-gcs-data:
