@@ -17,6 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Short SHA
+        id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Authenticate to GCP via WIF
         uses: google-github-actions/auth@v2
         with:
@@ -31,11 +35,11 @@ jobs:
         with:
           context: ./api
           push: true
-          tags: europe-west9-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/simplon-docker/api:${{ github.sha }}
+          tags: europe-west9-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/simplon-docker/api:${{ steps.sha.outputs.short }}
 
       - name: Build & Push Frontend
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
           push: true
-          tags: europe-west9-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/simplon-docker/frontend:${{ github.sha }}
+          tags: europe-west9-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/simplon-docker/frontend:${{ steps.sha.outputs.short }}
