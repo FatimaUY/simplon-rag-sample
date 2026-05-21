@@ -1,23 +1,26 @@
 import uuid
+import os
 from pathlib import Path
 import tempfile
-
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from rag.db.models.document import Document
 from rag.db.session import get_db
 from rag.rag.ingestion.pipeline import ingest_pdf, ingest_url
+from rag.storage.gcs import upload_pdf
 
 router = APIRouter(prefix="/documents", tags=["ingestion"])
 
+GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "simplon-fatima-corpus")
+
+def _is_gcs_configured() -> bool:
+    return bool(os.getenv("GCS_BUCKET_NAME") or os.getenv("GCS_ENDPOINT_URL"))
 
 class IngestUrlsRequest(BaseModel):
     urls: list[HttpUrl]
     max_pages: int | None = Field(default=None, gt=0)
-
 
 @router.post("/ingest-urls")
 async def ingest_urls(
@@ -45,7 +48,6 @@ async def ingest_urls(
             })
     return results
 
-
 @router.post("/ingest")
 async def ingest_document(
     file: UploadFile,
@@ -54,14 +56,25 @@ async def ingest_document(
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported")
 
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-        tmp.write(await file.read())
-        tmp_path = Path(tmp.name)
+    original_name = file.filename
+    tmp_dir = Path(tempfile.mkdtemp())
+    named_path = tmp_dir / original_name
 
     try:
-        result = await ingest_pdf(tmp_path, db)
+        named_path.write_bytes(await file.read())
+
+        # Upload GCS
+        if _is_gcs_configured():
+            try:
+                upload_pdf(named_path, GCS_BUCKET_NAME)
+                print(f"[GCS] Uploadé : {original_name}")
+            except Exception as exc:
+                print(f"[GCS] Erreur upload {original_name} : {exc}")
+
+        result = await ingest_pdf(named_path, db)
     finally:
-        tmp_path.unlink(missing_ok=True)
+        named_path.unlink(missing_ok=True)
+        tmp_dir.rmdir()
 
     return {
         "document_id": str(result.document_id),
@@ -69,7 +82,6 @@ async def ingest_document(
         "chunks_created": result.chunks_created,
         "already_existed": result.already_existed,
     }
-
 
 @router.get("")
 async def list_documents(db: AsyncSession = Depends(get_db)) -> list[dict]:
@@ -83,7 +95,6 @@ async def list_documents(db: AsyncSession = Depends(get_db)) -> list[dict]:
         }
         for d in docs
     ]
-
 
 @router.delete("/{document_id}")
 async def delete_document(
