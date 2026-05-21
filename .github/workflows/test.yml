@@ -54,6 +54,9 @@ jobs:
 
       - name: Install dependencies (dev)
         run: uv sync --extra dev
+        
+      - name: Create PostgreSQL schema
+        run: psql postgresql://postgres:postgres@localhost:5432/rag_test -c "CREATE SCHEMA IF NOT EXISTS rag;"
 
       - name: Run Alembic migrations
         run: uv run alembic upgrade head
