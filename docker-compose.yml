@@ -27,7 +27,7 @@ services:
       "-scheme", "http",
       "-port", "4443",
       "-external-url", "http://fake-gcp:4443",
-      "-backend", "filesystem",   
+      "-backend", "filesystem",
       "-data", "/data"
     ]
     ports:
@@ -58,7 +58,6 @@ services:
       CORS_ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:4173,http://localhost:8501"
       GCS_ENDPOINT_URL: "http://fake-gcs:4443"
       GCS_BUCKET_NAME: "simplon-fatima-corpus"
-
     ports:
       - "8000:8000"
     volumes:
